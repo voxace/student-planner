@@ -1,0 +1,56 @@
+html
+	include partials/header.pug
+	body
+		include partials/nav.pug
+		.container
+			.row.justify-content-center.align-items-center#login-screen
+				.col-8.login
+					h3.loginTitle
+						| Register or&nbsp;
+						a(href="/auth/login") Login
+					.row.socialButtons.justify-content-center
+						.col-md-4
+							a.btn.btn-lg.btn-block.btn-facebook(href="./facebook")
+								i.fa.fa-facebook.visible-xs
+								span.hidden-xs &nbsp;Facebook
+						.col-md-4
+							a.btn.btn-lg.btn-block.btn-twitter(href="./twitter")
+								i.fa.fa-twitter.visible-xs
+								span.hidden-xs &nbsp;Twitter
+						.col-md-4
+							a.btn.btn-lg.btn-block.btn-google(href="./google")
+								i.fa.fa-google-plus.visible-xs
+								span.hidden-xs &nbsp;Google+
+					.row.loginOr
+						.col-sm-12
+							hr.hrOr
+							span.spanOr or
+					.row
+						.col-sm-12
+							form.form-group(action="", autocomplete="off", method="POST")
+								.input-group
+									span.input-group-addon
+										i.fa.fa-user
+									input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name")
+								div.help-block
+								.input-group
+									span.input-group-addon
+										i.fa.fa-envelope
+									input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address")
+								div.help-block
+								.input-group
+									span.input-group-addon
+										i.fa.fa-lock
+									input.form-control.form-control-lg(type="password", name="password", placeholder="Password")
+								div.help-block
+								button.btn.btn-lg.btn-primary.btn-block(type="submit") Register
+					.row.justify-content-center.align-items-center
+						.col-sm-6.text-center
+							label.custom-control.custom-checkbox
+								input.custom-control-input(type="checkbox")
+								span.custom-control-indicator
+								span.custom-control-description Remember Me
+						.col-sm-6.text-center
+							p.forgotPwd
+								a(href="#") Forgot password?
+		include partials/footer.pug
