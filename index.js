@@ -1,5 +1,9 @@
 const express = require('express');
+const cookieParser = require('cookie-parser'); //
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator'); //
+const flash = require('connect-flash'); //
+const session = require('express-session'); //
 const multer = require('multer');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
@@ -28,6 +32,36 @@ app.use(cookieSession({
 // Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Express Validator
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+      var namespace = param.split('.')
+      , root    = namespace.shift()
+      , formParam = root;
+
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));
+
+// Connect Flash
+app.use(flash());
+
+// Global Vars
+app.use(function (req, res, next) {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  res.locals.user = req.user || null;
+  next();
+});
 
 // Serve static files
 app.use(express.static('./public'));
@@ -61,4 +95,8 @@ app.get('/', authCheck, (req, res) => {
 });
 
 // Listen on port 3000
-app.listen(3000);
+app.set('port', (process.env.PORT || 3000));
+
+app.listen(app.get('port'), function(){
+	console.log('Server started on port '+app.get('port'));
+});

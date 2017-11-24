@@ -23,10 +23,10 @@ const ClassSchema = new Schema({
   hw_tasks: [HwTaskSchema]
 });
 
+// username == email
 const StudentSchema = new Schema({
   name: String,
   username: String,
-  email: String,
   password: String,
   googleId: String,
   facebookId: String,

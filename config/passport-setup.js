@@ -2,6 +2,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const FacebookStrategy = require('passport-facebook');
 const TwitterStrategy = require('passport-twitter');
+const LocalStrategy = require('passport-local');
 const keys = require('./keys');
 const Student = require('../models/student');
 
@@ -33,7 +34,7 @@ passport.use(
       } else {
         // if user does not exist, add to db
         new Student({
-          username: profile.displayName,
+          name: profile.displayName,
           googleId: profile.id,
           thumbnail: profile._json.image.url
         }).save().then((newUser) => {
@@ -63,9 +64,9 @@ passport.use(
       } else {
         // if user does not exist, add to db
         new Student({
-          username: profile.displayName,
+          name: profile.displayName,
           facebookId: profile.id,
-          email: profile.emails[0].value,
+          username: profile.emails[0].value,
           thumbnail: 'https://graph.facebook.com/' + profile.id + '/picture?type=large'
         }).save().then((newUser) => {
           console.log('new user created: ' + newUser);
@@ -95,7 +96,7 @@ passport.use(
       } else {
         // if user does not exist, add to db
         new Student({
-          username: profile.displayName,
+          name: profile.displayName,
           twitterId: profile.id,
           thumbnail: profile._json.profile_image_url
         }).save().then((newUser) => {
@@ -106,3 +107,29 @@ passport.use(
     });
   })
 );
+
+// LOCAL STRATEGY
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    console.log(password);
+    Student.findOne({ username: username }, function (err, user) {
+      if (err) {
+        console.log(err);
+        return done(err);
+      }
+      if(user) {
+        console.log("User exists, checking password...");
+        if(user.password != password) {
+          console.log("Invalid Password");
+          return done(null, false);
+        } else {            
+          console.log("Password Correct. Logging in...");
+          return done(null, user);
+        }
+      } else {
+        console.log("User does NOT exist");
+        return done(null, false);
+      }
+    });
+  }
+));

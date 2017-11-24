@@ -3,6 +3,11 @@ html
   body
     include partials/nav.pug
     div.container
-      h1 #{user.username}
-      p Welcome back, #{user.username}
+      h1 #{user.name}
+      p Welcome back, #{user.name}
+      img(src=user.thumbnail)
+      p Email: #{user.username}
+      p Facebook: #{user.facebookId}
+      p Twitter: #{user.twitterId}
+      p Google: #{user.googleId}
     include partials/footer.pug

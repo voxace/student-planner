@@ -31,26 +31,63 @@ html
 								.input-group
 									span.input-group-addon
 										i.fa.fa-user
-									input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name")
-								div.help-block
+									if !errors
+										input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name")
+									else
+										input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name", value=values[0])
+								if errors
+									each val in errors
+										if val.msg == 'Name is required'
+											div.help-block= val.msg
+										else
+											div.help-block
+								else
+									div.help-block
 								.input-group
 									span.input-group-addon
 										i.fa.fa-envelope
-									input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address")
-								div.help-block
+									if !errors
+										input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address")
+									else
+										input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address", value=values[1])
+								if errors
+									each val in errors
+										if val.msg == 'Email is not valid'
+											div.help-block= val.msg
+										else
+											div.help-block
+								else
+									div.help-block
 								.input-group
 									span.input-group-addon
 										i.fa.fa-lock
-									input.form-control.form-control-lg(type="password", name="password", placeholder="Password")
-								div.help-block
+									if !errors
+										input.form-control.form-control-lg(type="password", name="password", placeholder="Password")
+									else
+										input.form-control.form-control-lg(type="password", name="password", placeholder="Password", value=values[2])
+								if errors
+									each val in errors
+										if val.msg == 'Password is required'
+											div.help-block= val.msg
+										else
+											div.help-block
+								else
+									div.help-block
+								.input-group
+									span.input-group-addon
+										i.fa.fa-lock
+									input.form-control.form-control-lg(type="password", name="password2", placeholder="Confirm Password")
+								if errors
+									each val in errors
+										if val.msg == 'Passwords do not match'
+											div.help-block= val.msg
+										else
+											div.help-block
+								else
+									div.help-block
 								button.btn.btn-lg.btn-primary.btn-block(type="submit") Register
 					.row.justify-content-center.align-items-center
-						.col-sm-6.text-center
-							label.custom-control.custom-checkbox
-								input.custom-control-input(type="checkbox")
-								span.custom-control-indicator
-								span.custom-control-description Remember Me
-						.col-sm-6.text-center
+						.col-sm-12.text-center
 							p.forgotPwd
 								a(href="#") Forgot password?
 		include partials/footer.pug

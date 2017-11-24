@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
+const Student = require('../models/student');
 
 // Auth login
 router.get('/login', (req, res) => {
@@ -17,10 +18,10 @@ router.get('/register', (req, res) => {
 });
 
 // Auth logout
-router.get('/logout', (req, res) => {
-  // handle with passport
-  req.logout();
-  res.redirect('../../');
+router.get('/logout', function(req, res){
+	req.logout();
+	req.flash('success_msg', 'You are logged out');
+	res.redirect('../../');
 });
 
 // Auth with Google
@@ -51,5 +52,52 @@ router.get('/facebook/callback', passport.authenticate('facebook'), (req, res) =
 router.get('/twitter/callback', passport.authenticate('twitter'), (req, res) => {
   res.redirect('/');
 });
+
+// Login user
+router.post('/login',
+  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/auth/login',failureFlash: true}),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+// Register User
+router.post('/register', function(req, res){
+	var name = req.body.name;
+	var username = req.body.username;
+	var password = req.body.password;
+	var password2 = req.body.password2;
+
+  var values = [name, username, password];
+
+  console.log("Registering: " + username);
+
+	// Validation
+	req.checkBody('name', 'Name is required').notEmpty();
+	req.checkBody('username', 'Email is not valid').isEmail();
+	req.checkBody('password', 'Password is required').notEmpty();
+	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+
+	var errors = req.validationErrors();
+  console.log(errors);
+
+	if(errors){
+		res.render('register',{
+			errors:errors,
+      values:values
+		});
+	} else {
+    new Student({
+      name: name,
+			username: username,
+			password: password
+    }).save().then((newUser) => {
+      console.log('New user created: ' + newUser);
+    });
+
+		req.flash('success_msg', 'You are registered and can now login');
+		res.redirect('/auth/login');
+	}
+});
+
 
 module.exports = router;
