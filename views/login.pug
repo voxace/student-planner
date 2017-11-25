@@ -1,6 +1,7 @@
 html
   include partials/header.pug
   body
+    script(src="../js/login.js")
     include partials/nav.pug
     .container
       .row.justify-content-center.align-items-center#login-screen
@@ -27,7 +28,7 @@ html
               span.spanOr or
           .row
             .col-sm-12
-              form.form-group(action="/auth/login/", autocomplete="off", method="POST")
+              form.form-group#login-form(action="/auth/login/", autocomplete="off", method="POST")
                 .input-group
                   span.input-group-addon
                     i.fa.fa-envelope
@@ -38,7 +39,7 @@ html
                     i.fa.fa-lock
                   input.form-control.form-control-lg(type="password", name="password", placeholder="Password")
                 div.help-block
-                button.btn.btn-lg.btn-primary.btn-block(type="submit") Login
+                button.btn.btn-lg.btn-primary.btn-block#submit-button(type="submit") Login
           .row
             .col-sm-12
               if success_msg != ""

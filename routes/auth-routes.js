@@ -3,18 +3,23 @@ const passport = require('passport');
 const Student = require('../models/student');
 
 // Auth login
+// If already logged in, redirect to home page
 router.get('/login', (req, res) => {
   if(!req.user === null) {
     res.redirect('../../');
   } else {
     res.render('login', {user: req.user});
   }
-
 });
 
 // Auth register
 router.get('/register', (req, res) => {
   res.render('register', {user: req.user});
+});
+
+// Auth second phase register
+router.get('/register2', (req, res) => {
+  res.render('register2', {user: req.user});
 });
 
 // Auth logout
@@ -39,18 +44,18 @@ router.get('/twitter', passport.authenticate('twitter'));
 
 // Callback route for google to redirect to
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-  res.redirect('/');
+  res.redirect('/auth/register2');
   //res.send(req.user);
 });
 
 // Callback route for google to redirect to
 router.get('/facebook/callback', passport.authenticate('facebook'), (req, res) => {
-  res.redirect('/');
+  res.redirect('/auth/register2');
 });
 
 // Callback route for twitter to redirect to
 router.get('/twitter/callback', passport.authenticate('twitter'), (req, res) => {
-  res.redirect('/');
+  res.redirect('/auth/register2');
 });
 
 // Login user
@@ -64,19 +69,15 @@ router.post('/register', function(req, res){
 	var username = req.body.username;
 	var password = req.body.password;
 	var password2 = req.body.password2;
-
   var values = [name, username, password];
 
-  console.log("Registering: " + username);
 
 	// Validation
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('username', 'Email is not valid').isEmail();
 	req.checkBody('password', 'Password is required').notEmpty();
 	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
-
 	var errors = req.validationErrors();
-  console.log(errors);
 
 	if(errors){
 		res.render('register',{
@@ -84,18 +85,86 @@ router.post('/register', function(req, res){
       values:values
 		});
 	} else {
-    new Student({
-      name: name,
-			username: username,
-			password: password
-    }).save().then((newUser) => {
-      console.log('New user created: ' + newUser);
+    Student.findOne({ username: username }, function (err, user) {
+      if (err) {
+        console.log(err);
+        return done(err);
+      }
+      if(user) {
+        req.flash('error_msg', 'A user with that email address already exists.');
+    		res.redirect('/auth/register');
+      } else {
+        new Student({
+          name: name,
+    			username: username,
+    			password: password
+        }).save().then((newUser) => {
+          console.log('New user created: ' + newUser);
+          req.flash('success_msg', 'You are registered and can now login');
+      		res.redirect('/auth/login');
+        });
+      }
     });
-
-		req.flash('success_msg', 'You are registered and can now login');
-		res.redirect('/auth/login');
 	}
 });
 
+// Register User
+router.post('/register2', function(req, res){
+	var name = req.body.name;
+	var username = req.body.username;
+	var password = req.body.password;
+	var password2 = req.body.password2;
+  var values = [name, username, password];
+
+	// Validation
+	req.checkBody('name', 'Name is required').notEmpty();
+	req.checkBody('username', 'Email is not valid').isEmail();
+	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+	var errors = req.validationErrors();
+
+	if(errors){
+		res.render('register2',{
+			errors:errors,
+      values:values
+		});
+	} else {
+    // update details
+    if(req.user.twitterId) {
+      Student.findOne({ twitterId: req.user.twitterId }).then(function(student){
+        if(name) { student.name = name; }
+        if(username) { student.username = username; }
+        if(password) { student.password = password; }
+        student.save().then(function() {
+          console.log("Student saved: " + student);
+        });
+        req.flash('success_msg', 'Successfully registered!');
+        res.redirect('/');
+      });
+    } else if (req.user.googleId) {
+      Student.findOne({ googleId: req.user.googleId }).then(function(student){
+        if(name) { student.name = name; }
+        if(username) { student.username = username; }
+        if(password) { student.password = password; }
+        student.save().then(function() {
+          console.log("Student saved: " + student);
+        });
+        req.flash('success_msg', 'Successfully registered!');
+        res.redirect('/');
+      });
+    } else if (req.user.facebookId) {
+      Student.findOne({ facebookId: req.user.facebookId }).then(function(student){
+        if(name) { student.name = name; }
+        if(username) { student.username = username; }
+        if(password) { student.password = password; }
+        student.save().then(function() {
+          console.log("Student saved: " + student);
+        });
+        req.flash('success_msg', 'Successfully registered!');
+        res.redirect('/');
+      });
+    }
+
+	}
+});
 
 module.exports = router;

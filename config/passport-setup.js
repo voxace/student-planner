@@ -129,25 +129,3 @@ passport.use('local-login', new LocalStrategy(
     });
   }
 ));
-
-// LOCAL STRATEGY FOR REGISTER
-passport.use('local-register', new LocalStrategy(
-  function(username, password, done) {
-    console.log(password);
-    Student.findOne({ username: username }, function (err, user) {
-      if (err) {
-        console.log(err);
-        return done(err);
-      }
-      if(user) {
-        if(user.password != password) {
-          return done(null, false, { message: 'Incorrect password.' });
-        } else {
-          return done(null, user);
-        }
-      } else {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-    });
-  }
-));

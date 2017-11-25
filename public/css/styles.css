@@ -35,6 +35,7 @@ body {
   min-height: calc(99vh - 160px);
   margin-top: 20px;
   margin-bottom: 80px;
+  opacity: 0;
 }
 
 .login {
@@ -125,4 +126,9 @@ body {
 
 .forgotPwd {
   margin-top: 10px;
+}
+
+.instructions {
+  padding-bottom: 15px;
+  font-size: 1.1em;
 }

@@ -14,17 +14,17 @@ nav.navbar.navbar-light.bg-faded.navbar-toggleable-md
           a.nav-link(href="#") Calendar
         li.nav-item.dropdown
           a#navbarDropdownMenuLink.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-            img.rounded.profile-picture(src=user.thumbnail)
-            | David
+            if user.thumbnail
+              img.rounded.profile-picture(src=user.thumbnail)
+            else
+              img.rounded.profile-picture(src="../img/person.png")
+            | #{user.name}
           .dropdown-menu.dropdown-menu-right(aria-labelledby='navbarDropdownMenuLink')
-            a.dropdown-item(href='#')
+            a.dropdown-item(href='/settings/')
               span.fa.fa-cogs
               | &nbsp;&nbsp;Settings
-            a.dropdown-item(href='#') Profile
-            a.dropdown-item(href='#') My Jobs
-            a.dropdown-item(href='#') My Searches
-            a.dropdown-item(href='#') Employer Dashboard
-            a.dropdown-item(href='#') Login
             a.dropdown-item
               div.dropdown-divider
-            a.dropdown-item(href='/auth/logout/') Logout
+            a.dropdown-item(href='/auth/logout/')
+              span.fa.fa-power-off
+              | &nbsp;&nbsp;Logout

@@ -5,36 +5,18 @@ html
     .container
       .row.justify-content-center.align-items-center#login-screen
         .col-8.login
-          h3.loginTitle
-            | Register or&nbsp;
-            a(href="/auth/login") Login
-          .row.socialButtons.justify-content-center
-            .col-md-4
-              a.btn.btn-lg.btn-block.btn-facebook(href="./facebook")
-                i.fa.fa-facebook.visible-xs
-                span.hidden-xs &nbsp;Facebook
-            .col-md-4
-              a.btn.btn-lg.btn-block.btn-twitter(href="./twitter")
-                i.fa.fa-twitter.visible-xs
-                span.hidden-xs &nbsp;Twitter
-            .col-md-4
-              a.btn.btn-lg.btn-block.btn-google(href="./google")
-                i.fa.fa-google-plus.visible-xs
-                span.hidden-xs &nbsp;Google+
-          .row.loginOr
-            .col-sm-12
-              hr.hrOr
-              span.spanOr or
+          h3.loginTitle Complete Your Registration
+          p.text-center.instructions If you choose to add an email address and password you will then be able to log in with those credentials as well as your linked social media account.
           .row
             .col-sm-12
               form.form-group#login-form(action="", autocomplete="off", method="POST")
                 .input-group
                   span.input-group-addon
                     i.fa.fa-user
-                  if !errors
-                    input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name")
+                  if user.name
+                    input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name", value=user.name, required)
                   else
-                    input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name", value=values[0])
+                    input.form-control.form-control-lg(type="text", name="name", placeholder="Full Name", required)
                 if errors
                   each val in errors
                     if val.msg == 'Name is required'
@@ -46,10 +28,10 @@ html
                 .input-group
                   span.input-group-addon
                     i.fa.fa-envelope
-                  if !errors
-                    input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address")
+                  if user.username
+                    input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address", value=user.username, required)
                   else
-                    input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address", value=values[1])
+                    input.form-control.form-control-lg(type="text", name="username", placeholder="Email Address", required)
                 if errors
                   each val in errors
                     if val.msg == 'Email is not valid'
@@ -61,10 +43,7 @@ html
                 .input-group
                   span.input-group-addon
                     i.fa.fa-lock
-                  if !errors
-                    input.form-control.form-control-lg(type="password", name="password", placeholder="Password")
-                  else
-                    input.form-control.form-control-lg(type="password", name="password", placeholder="Password", value=values[2])
+                  input.form-control.form-control-lg(type="password", name="password", placeholder="Password")
                 if errors
                   each val in errors
                     if val.msg == 'Password is required'
@@ -85,7 +64,7 @@ html
                       div.help-block
                 else
                   div.help-block
-                button.btn.btn-lg.btn-primary.btn-block#submit-button(type="submit") Register
+                button.btn.btn-lg.btn-primary.btn-block#submit-button(type="submit") Complete Registration
           .row
             .col-sm-12
               if success_msg != ""

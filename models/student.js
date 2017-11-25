@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt-nodejs');
 
 // Create schemas
 const AssTaskSchema = new Schema({
@@ -35,6 +36,17 @@ const StudentSchema = new Schema({
   grade: Number,
   classes: [ClassSchema]
 });
+
+
+// Generating a hash
+StudentSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
+
+// Checking if password is valid
+StudentSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.local.password);
+};
 
 // Create model
 const Student = mongoose.model('student', StudentSchema);
