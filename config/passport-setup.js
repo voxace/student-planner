@@ -108,8 +108,8 @@ passport.use(
   })
 );
 
-// LOCAL STRATEGY
-passport.use(new LocalStrategy(
+// LOCAL STRATEGY FOR LOGIN
+passport.use('local-login', new LocalStrategy(
   function(username, password, done) {
     console.log(password);
     Student.findOne({ username: username }, function (err, user) {
@@ -118,17 +118,35 @@ passport.use(new LocalStrategy(
         return done(err);
       }
       if(user) {
-        console.log("User exists, checking password...");
         if(user.password != password) {
-          console.log("Invalid Password");
-          return done(null, false);
-        } else {            
-          console.log("Password Correct. Logging in...");
+          return done(null, false, { message: 'Incorrect password.' });
+        } else {
           return done(null, user);
         }
       } else {
-        console.log("User does NOT exist");
-        return done(null, false);
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+    });
+  }
+));
+
+// LOCAL STRATEGY FOR REGISTER
+passport.use('local-register', new LocalStrategy(
+  function(username, password, done) {
+    console.log(password);
+    Student.findOne({ username: username }, function (err, user) {
+      if (err) {
+        console.log(err);
+        return done(err);
+      }
+      if(user) {
+        if(user.password != password) {
+          return done(null, false, { message: 'Incorrect password.' });
+        } else {
+          return done(null, user);
+        }
+      } else {
+        return done(null, false, { message: 'Incorrect username.' });
       }
     });
   }

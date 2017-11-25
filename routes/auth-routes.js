@@ -55,10 +55,8 @@ router.get('/twitter/callback', passport.authenticate('twitter'), (req, res) => 
 
 // Login user
 router.post('/login',
-  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/auth/login',failureFlash: true}),
-  function(req, res) {
-    res.redirect('/');
-  });
+  passport.authenticate('local-login', {successRedirect:'/', failureRedirect:'/auth/login', failureFlash: true})
+);
 
 // Register User
 router.post('/register', function(req, res){
