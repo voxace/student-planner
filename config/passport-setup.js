@@ -51,7 +51,7 @@ passport.use('google-login',
       if(currentUser) {
         done(null, currentUser);
       } else {
-        done(null,null);
+        done(null,null, { message: 'Account does not exist, please register first.' });
       }
     });
   })
@@ -69,7 +69,7 @@ passport.use('facebook-login',
       if(currentUser) {
         done(null, currentUser);
       } else {
-        done(null,null);
+        done(null,null, { message: 'Account does not exist, please register first.' });
       }
     });
   })
@@ -113,7 +113,7 @@ passport.use('twitter-login',
       if(currentUser) {
         done(null, currentUser);
       } else {
-        done(null,null);
+        done(null,null, { message: 'Account does not exist, please register first.' });
       }
     });
   })

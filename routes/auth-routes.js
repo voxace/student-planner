@@ -42,7 +42,7 @@ router.get('/twitter/login', passport.authenticate('twitter-login'));
 router.get('/twitter/register', passport.authenticate('twitter-register'));
 
 // Callback route for google to redirect to
-router.get('/google/login/callback', passport.authenticate('google-login'), (req, res) => {
+router.get('/google/login/callback', passport.authenticate('google-login', { failureRedirect:'/auth/login', failureFlash: true} ),(req, res) => {
   res.redirect('/');
 });
 router.get('/google/register/callback', passport.authenticate('google-register', { failureRedirect:'/auth/login', failureFlash: true} ), (req, res) => {
@@ -50,7 +50,7 @@ router.get('/google/register/callback', passport.authenticate('google-register',
 });
 
 // Callback route for facebook to redirect to
-router.get('/facebook/login/callback', passport.authenticate('facebook-login'), (req, res) => {
+router.get('/facebook/login/callback', passport.authenticate('facebook-login', { failureRedirect:'/auth/login', failureFlash: true} ), (req, res) => {
   res.redirect('/');
 });
 router.get('/facebook/register/callback', passport.authenticate('facebook-register', { failureRedirect:'/auth/login', failureFlash: true} ), (req, res) => {
@@ -58,7 +58,7 @@ router.get('/facebook/register/callback', passport.authenticate('facebook-regist
 });
 
 // Callback route for twitter to redirect to
-router.get('/twitter/login/callback', passport.authenticate('twitter-login'), (req, res) => {
+router.get('/twitter/login/callback', passport.authenticate('twitter-login', { failureRedirect:'/auth/login', failureFlash: true} ),(req, res) => {
   res.redirect('/');
 });
 router.get('/twitter/register/callback', passport.authenticate('twitter-register', { failureRedirect:'/auth/login', failureFlash: true} ), (req, res) => {
