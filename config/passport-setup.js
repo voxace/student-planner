@@ -11,7 +11,6 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  // Look up DB for a Student with exact ID
   Student.findById(id).then((user) => {
     done(null, user);
   });
@@ -19,20 +18,16 @@ passport.deserializeUser((id, done) => {
 
 // GOOGLE STRATEGY
 // User will have to provide email verification
-passport.use(
+passport.use('google-register',
   new GoogleStrategy({
-    // options for the strategy
-    callbackURL: '/auth/google/redirect',
+    callbackURL: '/auth/google/register/callback',
     clientID: keys.google.clientID,
     clientSecret: keys.google.clientSecret
   }, (accessToken, refreshToken, profile, done) => {
     Student.findOne({googleId: profile.id}).then((currentUser) => {
       if(currentUser) {
-        // if user already exists
-        console.log('user already exists: ' + currentUser);
-        done(null, currentUser);
+        return done(null, false, { message: 'User already exists, try logging in.' });
       } else {
-        // if user does not exist, add to db
         new Student({
           name: profile.displayName,
           googleId: profile.id,
@@ -46,23 +41,51 @@ passport.use(
   })
 );
 
+passport.use('google-login',
+  new GoogleStrategy({
+    callbackURL: '/auth/google/login/callback',
+    clientID: keys.google.clientID,
+    clientSecret: keys.google.clientSecret
+  }, (accessToken, refreshToken, profile, done) => {
+    Student.findOne({googleId: profile.id}).then((currentUser) => {
+      if(currentUser) {
+        done(null, currentUser);
+      } else {
+        done(null,null);
+      }
+    });
+  })
+);
+
 // FACEBOOK STRATEGY
-passport.use(
+passport.use('facebook-login',
   new FacebookStrategy({
-    // options for the strategy
-    callbackURL: '/auth/facebook/callback',
+    callbackURL: '/auth/facebook/login/callback',
     clientID: keys.facebook.clientID,
     clientSecret: keys.facebook.clientSecret,
-    callbackURL: keys.facebook.callbackURL,
     profileFields: keys.facebook.profileFields
   }, (accessToken, refreshToken, profile, done) => {
     Student.findOne({facebookId: profile.id}).then((currentUser) => {
       if(currentUser) {
-        // if user already exists
-        console.log('user already exists: ' + currentUser);
         done(null, currentUser);
       } else {
-        // if user does not exist, add to db
+        done(null,null);
+      }
+    });
+  })
+);
+
+passport.use('facebook-register',
+  new FacebookStrategy({
+    callbackURL: '/auth/facebook/register/callback',
+    clientID: keys.facebook.clientID,
+    clientSecret: keys.facebook.clientSecret,
+    profileFields: keys.facebook.profileFields
+  }, (accessToken, refreshToken, profile, done) => {
+    Student.findOne({facebookId: profile.id}).then((currentUser) => {
+      if(currentUser) {
+        return done(null, false, { message: 'User already exists, try logging in.' });
+      } else {
         new Student({
           name: profile.displayName,
           facebookId: profile.id,
@@ -79,22 +102,34 @@ passport.use(
 
 // TWITTER STRATEGY
 // User will have to provide email verification
-passport.use(
+passport.use('twitter-login',
   new TwitterStrategy({
-    // options for the strategy
-    callbackURL: '/auth/twitter/callback',
+    callbackURL: '/auth/twitter/login/callback',
     consumerKey: keys.twitter.consumerKey,
-    consumerSecret: keys.twitter.consumerSecret,
-    callbackURL: keys.twitter.callbackURL
+    consumerSecret: keys.twitter.consumerSecret
   }, (accessToken, refreshToken, profile, done) => {
     console.log(profile);
     Student.findOne({twitterId: profile.id}).then((currentUser) => {
       if(currentUser) {
-        // if user already exists
-        console.log('user already exists: ' + currentUser);
         done(null, currentUser);
       } else {
-        // if user does not exist, add to db
+        done(null,null);
+      }
+    });
+  })
+);
+
+passport.use('twitter-register',
+  new TwitterStrategy({
+    callbackURL: '/auth/twitter/register/callback',
+    consumerKey: keys.twitter.consumerKey,
+    consumerSecret: keys.twitter.consumerSecret
+  }, (accessToken, refreshToken, profile, done) => {
+    console.log(profile);
+    Student.findOne({twitterId: profile.id}).then((currentUser) => {
+      if(currentUser) {
+        return done(null, false, { message: 'User already exists, try logging in.' });
+      } else {
         new Student({
           name: profile.displayName,
           twitterId: profile.id,

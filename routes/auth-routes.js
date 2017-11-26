@@ -30,31 +30,38 @@ router.get('/logout', function(req, res){
 });
 
 // Auth with Google
-router.get('/google', passport.authenticate('google', {
-  scope: ['profile']
-}));
+router.get('/google/login', passport.authenticate('google-login', { scope: ['profile'] }));
+router.get('/google/register', passport.authenticate('google-register', { scope: ['profile'] }));
 
 // Auth with Facebook
-router.get('/facebook', passport.authenticate('facebook', {
-  scope: ['email']
-}));
+router.get('/facebook/login', passport.authenticate('facebook-login', { scope: ['email'] }));
+router.get('/facebook/register', passport.authenticate('facebook-register', { scope: ['email'] }));
 
 // Auth with Twitter
-router.get('/twitter', passport.authenticate('twitter'));
+router.get('/twitter/login', passport.authenticate('twitter-login'));
+router.get('/twitter/register', passport.authenticate('twitter-register'));
 
 // Callback route for google to redirect to
-router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
+router.get('/google/login/callback', passport.authenticate('google-login'), (req, res) => {
+  res.redirect('/');
+});
+router.get('/google/register/callback', passport.authenticate('google-register', { failureRedirect:'/auth/login', failureFlash: true} ), (req, res) => {
   res.redirect('/auth/register2');
-  //res.send(req.user);
 });
 
-// Callback route for google to redirect to
-router.get('/facebook/callback', passport.authenticate('facebook'), (req, res) => {
+// Callback route for facebook to redirect to
+router.get('/facebook/login/callback', passport.authenticate('facebook-login'), (req, res) => {
+  res.redirect('/');
+});
+router.get('/facebook/register/callback', passport.authenticate('facebook-register', { failureRedirect:'/auth/login', failureFlash: true} ), (req, res) => {
   res.redirect('/auth/register2');
 });
 
 // Callback route for twitter to redirect to
-router.get('/twitter/callback', passport.authenticate('twitter'), (req, res) => {
+router.get('/twitter/login/callback', passport.authenticate('twitter-login'), (req, res) => {
+  res.redirect('/');
+});
+router.get('/twitter/register/callback', passport.authenticate('twitter-register', { failureRedirect:'/auth/login', failureFlash: true} ), (req, res) => {
   res.redirect('/auth/register2');
 });
 
@@ -63,14 +70,13 @@ router.post('/login',
   passport.authenticate('local-login', {successRedirect:'/', failureRedirect:'/auth/login', failureFlash: true})
 );
 
-// Register User
+// Register User (not handled by passport)
 router.post('/register', function(req, res){
 	var name = req.body.name;
 	var username = req.body.username;
 	var password = req.body.password;
 	var password2 = req.body.password2;
   var values = [name, username, password];
-
 
 	// Validation
 	req.checkBody('name', 'Name is required').notEmpty();

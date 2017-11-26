@@ -8,14 +8,12 @@ module.exports = {
   facebook: {
     clientID: '1470431146343754',
     clientSecret: 'c8d85a0368b4240be3f674c6b9e8c109',
-    callbackURL: "http://localhost:3000/auth/facebook/callback",
     passReqToCallback: true,
     profileFields: ['id', 'displayName', 'emails', 'name']
   },
   twitter: {
     consumerKey: 'vm7E3Xnflt5Yo4kqi62UcvYcu',
-    consumerSecret: 'pO5WJUy6ziqpB3kFLU4eOHalsOQZKjejbVKia2iFFRuoiV2LnR',
-    callbackURL: "http://localhost:3000/auth/twitter/callback"
+    consumerSecret: 'pO5WJUy6ziqpB3kFLU4eOHalsOQZKjejbVKia2iFFRuoiV2LnR'
   },
   mongodb: {
     dbURI: 'mongodb://user:pass@ds261755.mlab.com:61755/students'
